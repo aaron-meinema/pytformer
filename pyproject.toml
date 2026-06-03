@@ -1,0 +1,60 @@
+[project]
+name = "game"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "pygame>=2.6.1",
+]
+[tool.ruff]
+line-length = 100
+preview = true
+
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+fix = true
+target-version = "py314"
+[tool.ruff.lint]
+# Add the `line-too-long` rule to the enforced rule set. By default, Ruff omits rules that
+# overlap with the use of a formatter, like Black, but we can override this behavior by
+# explicitly adding the rule.
+select = ["E", "W", "F", "UP", "B", "I", "S", "T20", "FAST", "PLR"]
+
+[tool.ruff.lint.pylint]
+max-nested-blocks = 3
+
+[tool.ruff.lint.per-file-ignores]
+"test/*" = ["S101", "PLR2004", "PLR6301"]  # Allow assert statements in tests and constants in tests
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.14",
+]

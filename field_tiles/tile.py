@@ -19,15 +19,15 @@ class Tile:
     def get_position(self) -> tuple:
         return self.rect.topleft
 
-    def on_floor(self, unit_rect: pygame.Rect, previous_bottom: int) -> bool:
+    def on_floor(self, unit_rect: pygame.Rect) -> bool:
         if not self.rect.colliderect(unit_rect):
             return False
 
-        overlap = min(unit_rect.right, self.rect.right) - max(unit_rect.left, self.rect.left)
+        overlap = min(unit_rect.right, self.rect.right) - max(unit_rect.left, self.rect.left) - 20
         if overlap <= 0:
             return False
-
-        return previous_bottom <= self.rect.top and unit_rect.bottom >= self.rect.top
+        print(f'self top: {self.rect.top}, unit bottom: {unit_rect.bottom}')
+        return (unit_rect.bottom - 8) <= self.rect.top
 
     def on_wall(self, unit_rect: pygame.Rect) -> bool:
         return self.rect.colliderect(unit_rect) and (unit_rect.right >= self.rect.left - 10 and

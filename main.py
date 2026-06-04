@@ -17,7 +17,9 @@ class App:
         self._running = True
         self.player = Player(200, 200)
         self.tiles.append(Tile(0, 500, 0))
-        self.tiles.append(Tile(64, 500, 0))
+        self.tiles.append(Tile(32, 500, 1))
+        self.tiles.append(Tile(64, 500, 3))
+        self.tiles.append(Tile(386, 500, 0))
 
     def on_event(self, event):
         if event.type == pygame.QUIT:

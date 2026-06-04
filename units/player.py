@@ -14,7 +14,6 @@ class Player(Unit):
         self.is_jumping = True
         self.on_floor = False
         self.vertical_velocity = 0
-        self.previous_bottom = self.rect.bottom
         self.start_fall_speed = 180
 
         self.frame_timer = 0
@@ -22,7 +21,6 @@ class Player(Unit):
         self.image = self.get_frame(self.frame_index)
 
     def update(self, delta_time: float) -> None:
-        self.previous_bottom = self.rect.bottom
         self.movement(delta_time)
         self.frame_timer += delta_time
 
@@ -65,7 +63,7 @@ class Player(Unit):
         self.on_floor = False
 
         for tile in tiles:
-            if tile.on_floor(self.rect, self.previous_bottom):
+            if tile.on_floor(self.rect):
                 self.on_floor = True
                 self.is_jumping = False
                 self.vertical_velocity = 0

@@ -26,7 +26,6 @@ class Tile:
         overlap = min(unit_rect.right, self.rect.right) - max(unit_rect.left, self.rect.left) - 20
         if overlap <= 0:
             return False
-        print(f'self top: {self.rect.top}, unit bottom: {unit_rect.bottom}')
         return (unit_rect.bottom - 8) <= self.rect.top
 
     def on_wall(self, unit_rect: pygame.Rect) -> bool:

@@ -1,14 +1,18 @@
+from __future__ import annotations
+
 import pygame
 
 
 class Tile:
-    def __init__(self, x, y, image_number: int):
+    def __init__(self, x: int, y: int, image_number: int):
         self.full_image = pygame.image.load(
             "assets/sprites/tiles/midground_/summer_.png").convert_alpha()
         self.image = pygame.Surface((8, 8), pygame.SRCALPHA)
         self.image.blit(self.full_image, (0, 0), (image_number * 8, 8, 8, 8))
         self.image = pygame.transform.scale(self.image, (32, 32))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.overlap_threshold = 20
+        self.image_number = image_number
 
     def get_width(self) -> int:
         return self.rect.width
@@ -23,7 +27,11 @@ class Tile:
         if not self.rect.colliderect(unit_rect):
             return False
 
-        overlap = min(unit_rect.right, self.rect.right) - max(unit_rect.left, self.rect.left) - 20
+        overlap = (
+            min(unit_rect.right, self.rect.right) -
+            max(unit_rect.left, self.rect.left) -
+            self.overlap_threshold
+        )
         if overlap <= 0:
             return False
         return (unit_rect.bottom - 8) <= self.rect.top
@@ -31,3 +39,14 @@ class Tile:
     def on_wall(self, unit_rect: pygame.Rect) -> bool:
         return self.rect.colliderect(unit_rect) and (unit_rect.right >= self.rect.left - 10 and
                                                      unit_rect.left <= self.rect.right + 10)
+
+    def to_json(self) -> dict:
+        return {
+            "x": self.rect.x,
+            "y": self.rect.y,
+            "image_number": self.image_number
+        }
+
+    @classmethod
+    def from_json(cls, data: dict) -> Tile:
+        return cls(data["x"], data["y"], data["image_number"])

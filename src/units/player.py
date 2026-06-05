@@ -1,6 +1,6 @@
 import pygame
 
-from units.unit import Unit
+from src.units.unit import Unit
 
 
 class Player(Unit):

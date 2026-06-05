@@ -1,4 +1,4 @@
 from creator import Creator
 
-game = Creator()
-game.on_execute(1)
+creator = Creator()
+creator.on_execute(1)

@@ -2,8 +2,8 @@ import json
 
 import pygame
 
-from field_tiles.tile import Tile
-from units.player import Player
+from src.field_tiles.tile import Tile
+from src.units.player import Player
 
 
 class Game:

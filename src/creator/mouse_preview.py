@@ -31,6 +31,14 @@ class MousePreview:
 
     def _calculated_first_type(self, current_mouse: tuple[int, int]) -> pygame.Rect:
         calculated_x = (current_mouse[0] - current_mouse[0] % 32) - self.mouse_begin_pos[0] - 16
+        if calculated_x < 0:
+            offset = current_mouse[0] - current_mouse[0] % 32
+            calculated_x = self.mouse_begin_pos[0] - offset + 16
+            return pygame.Rect(
+                offset,
+                self.mouse_begin_pos[1],
+                calculated_x,
+                32)
         return pygame.Rect(
             self.mouse_begin_pos[0],
             self.mouse_begin_pos[1],

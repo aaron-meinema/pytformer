@@ -1,7 +1,6 @@
-
 import pygame
 
-from src.creator.midground_types import UpperType
+from src.creator.midground_types import RowType, SizeType, UpperType
 from src.creator.mouse_preview import MousePreview
 from src.field_tiles.tile import Tile
 
@@ -9,6 +8,7 @@ from src.field_tiles.tile import Tile
 class UnitSpawner:
     def __init__(self, creator):
         self.upper_type = UpperType.GRASS
+        self.size_type = SizeType.SMALL
         self.creator = creator
         self.mouse_tile = None
         self.mouse_preview = None
@@ -24,6 +24,7 @@ class UnitSpawner:
         if pygame.mouse.get_pressed()[0] and not self.clicked:  # Left mouse button
             self.mouse_preview = MousePreview(
                 self.upper_type,
+                self.size_type,
                 calculated_mouse_pos,
                 self.creator)
 
@@ -33,7 +34,7 @@ class UnitSpawner:
             self.clicked = False
             if self.mouse_preview:
                 positions = self.mouse_preview.units(mouse_pos)
-                new_units = self._get_first_type(positions)
+                new_units = self.get_units(positions)
                 self.creator.tiles.extend(new_units)
             self.mouse_preview = None
 
@@ -45,6 +46,12 @@ class UnitSpawner:
             self.upper_type = UpperType.DIRT
         if keys[pygame.K_2]:
             self.upper_type = UpperType.NONE
+        if keys[pygame.K_s]:
+            self.size_type = SizeType.SMALL
+        if keys[pygame.K_m]:
+            self.size_type = SizeType.MEDIUM
+        if keys[pygame.K_l]:
+            self.size_type = SizeType.LARGE
         if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
             self.creator.save()
 
@@ -54,21 +61,39 @@ class UnitSpawner:
         if self.mouse_preview:
             self.mouse_preview.on_render()
 
-    def _get_first_type(self, rect: pygame.Rect) -> list[Tile]:
+    def get_units(self, rect: pygame.Rect) -> list[Tile]:
+        match (self.size_type):
+            case SizeType.SMALL:
+                return self._get_small_type(rect)
+            case SizeType.MEDIUM:
+                return self._get_medium_type(rect)
+            case SizeType.LARGE:
+                return self._get_small_type(rect)
+
+    def _get_small_type(self, rect: pygame.Rect) -> list[Tile]:
         units = []
         offset = self._get_offset_upper_type()
         for x in range(rect.left, rect.right, 32):
             if x == rect.left and x == (rect.right - 32):
-                units.append(Tile(x, rect.top, 24))
+                units.append(Tile(x, rect.top, RowType.SINGLE, 24))
             elif x == rect.left:
-                units.append(Tile(x, rect.top, offset + 0))
+                units.append(Tile(x, rect.top, RowType.SINGLE, offset + 0))
             elif x == rect.right - 32:
-                units.append(Tile(x, rect.top, offset + 3))
+                units.append(Tile(x, rect.top, RowType.SINGLE, offset + 3))
             elif x % 64 == 16:  # noqa: PLR2004
-                units.append(Tile(x, rect.top, offset + 1))
+                units.append(Tile(x, rect.top, RowType.SINGLE, offset + 1))
             else:
-                units.append(Tile(x, rect.top, offset + 2))
+                units.append(Tile(x, rect.top, RowType.SINGLE, offset + 2))
         return units
+
+    def _get_medium_type(self, rect: pygame.Rect) -> list[Tile]:
+        return self._get_small_type(rect)
+        units = []
+        offset = self._get_offset_upper_type()
+        for x in range(rect.left, rect.right, 32):
+            for y in range(rect.top, rect.bottom, 32):
+                xy_rect: tuple[int, int] = (x, y)
+                # if xy_rect == rect.topleft:
 
     def _get_offset_upper_type(self) -> int:
         match (self.upper_type):

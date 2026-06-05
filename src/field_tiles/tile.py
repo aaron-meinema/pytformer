@@ -2,17 +2,21 @@ from __future__ import annotations
 
 import pygame
 
+from src.creator.midground_types import RowType
+
 
 class Tile:
-    def __init__(self, x: int, y: int, image_number: int):
+    def __init__(self, x: int, y: int, row_type: RowType, image_number: int):
         self.full_image = pygame.image.load(
             "assets/sprites/tiles/midground_/summer_.png").convert_alpha()
         self.image = pygame.Surface((8, 8), pygame.SRCALPHA)
+        # row_offset = self._get_row_offset()
         self.image.blit(self.full_image, (0, 0), (image_number * 8, 8, 8, 8))
         self.image = pygame.transform.scale(self.image, (32, 32))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.overlap_threshold = 20
         self.image_number = image_number
+        self.row_type = row_type
 
     def get_width(self) -> int:
         return self.rect.width
@@ -44,9 +48,19 @@ class Tile:
         return {
             "x": self.rect.x,
             "y": self.rect.y,
+            "row_type": self.row_type.get_value(),
             "image_number": self.image_number
         }
 
+    def _get_row_offset(self) -> int:
+        match self.row_type:
+            case RowType.SINGLE:
+                return 0
+            case RowType.DUAL_TOP:
+                return 3
+            case RowType.DUAL_BOTTOM:
+                return 4
+
     @classmethod
     def from_json(cls, data: dict) -> Tile:
-        return cls(data["x"], data["y"], data["image_number"])
+        return cls(data["x"], data["y"], RowType.from_value(data["row_type"]), data["image_number"])

@@ -40,12 +40,13 @@ exclude = [
     "venv",
 ]
 fix = true
-target-version = "py314"
+target-version = "py312"
 [tool.ruff.lint]
 # Add the `line-too-long` rule to the enforced rule set. By default, Ruff omits rules that
 # overlap with the use of a formatter, like Black, but we can override this behavior by
 # explicitly adding the rule.
 select = ["E", "W", "F", "UP", "B", "I", "S", "T20", "FAST", "PLR"]
+ignore = ["UP037"]
 
 [tool.ruff.lint.pylint]
 max-nested-blocks = 3
